@@ -82,7 +82,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HomeHub.cs" />
+    <Compile Include="Services\IImageService.cs" />
+    <Compile Include="Services\ImageService.cs" />
+    <Compile Include="SignalR\HomeHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
