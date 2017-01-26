@@ -31,6 +31,26 @@ namespace HackerGamesHub.SignalR
         {
             Clients.Group(GroupNames.Bell).HomeAccepted(message);
         }
+
+        public void SendMessage(string message)
+        {
+            Clients.Group(GroupNames.Home).MessageSent(message);
+        }
+
+        public void RespondMessage(string message)
+        {
+            Clients.Group(GroupNames.Bell).MessageResponded(message);
+        }
+
+        public void OpenDoor()
+        {
+            Clients.Group(GroupNames.Bell).DoorOpened();
+        }
+
+        public void End()
+        {
+            Clients.Group(GroupNames.Bell).Ended();
+        }
     }
 
     public class GroupNames
