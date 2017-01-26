@@ -33,6 +33,7 @@ public class DoorbellActivity extends BaseActivity implements DoorbellView {
     @Override
     public void pressDoorbell() {
         vibrator.vibrate(400);
+
         presenter.onDoorbellPressed();
     }
 
