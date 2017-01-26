@@ -1,8 +1,11 @@
-﻿namespace HackerGamesHub.Services
+﻿using System;
+using System.Threading.Tasks;
+
+namespace HackerGamesHub.Services
 {
     public interface IImageService
     {
-        void SaveImage(string imageId, byte[] imageContent);
-        byte[] GetImage(string imageId);
+        Task<string> SaveImage(byte[] imageContent);
+        Task<byte[]> GetImage(string imageId);
     }
 }

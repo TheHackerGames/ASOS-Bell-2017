@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace HackerGamesHub.Services
 {
@@ -6,12 +8,14 @@ namespace HackerGamesHub.Services
     {
         private readonly ConcurrentDictionary<string, byte[]> images = new ConcurrentDictionary<string, byte[]>();
 
-        public void SaveImage(string imageId, byte[] imageContent)
+        public Task<string> SaveImage(byte[] imageContent)
         {
+            var imageId = Guid.NewGuid().ToString();
             images[imageId] = imageContent;
+            return Task.FromResult(imageId);
         }
 
-        public byte[] GetImage(string imageId)
+        public Task<byte[]> GetImage(string imageId)
         {
             byte[] result;
             if (!images.TryGetValue(imageId, out result))
@@ -19,7 +23,7 @@ namespace HackerGamesHub.Services
                 result = new byte[0];
             }
 
-            return result;
+            return Task.FromResult(result);
         }
     }
 }
