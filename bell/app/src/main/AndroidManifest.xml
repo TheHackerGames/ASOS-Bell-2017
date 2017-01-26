@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.asos.hackergames.hackergamesdoorbell">
 
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +12,10 @@
         android:theme="@style/AppTheme">
 
 
+        <service
+            android:name=".service.SignalRService"
+            android:enabled="true"
+            android:exported="true" />
         <activity android:name=".doorbell.view.ui.activity.DoorbellActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
