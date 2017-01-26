@@ -167,6 +167,7 @@
     <Compile Include="Infrastructure\ApiConfig.cs" />
     <Compile Include="Infrastructure\ContainerConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Results\ImageResult.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

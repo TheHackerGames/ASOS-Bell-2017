@@ -2,6 +2,6 @@
 {
     public class Routes
     {
-        public const string ImageRoute = "/api/image";
+        public const string ImageRoute = "api/image";
     }
 }
