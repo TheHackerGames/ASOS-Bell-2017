@@ -5,4 +5,8 @@ public interface DoorbellView {
     void displayMessage(String s);
 
     void requestSpeech();
+
+    void takePicture();
+
+    void speakMessage(String message);
 }

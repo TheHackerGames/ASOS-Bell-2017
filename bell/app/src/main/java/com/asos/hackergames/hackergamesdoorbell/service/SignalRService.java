@@ -28,6 +28,8 @@ public class SignalRService extends Service {
     public static final String SERVER_HUB_CHAT = "HomeHub";
     public static final String PRESS_BELL = "PressBell";
     public static final String ACCEPT_HOME = "HomeAccepted";
+    public static final String SEND_MESSAGE = "SendMessage";
+    public static final String MESSAGE_RESPONDED = "MessageResponded";
     private DoorbellView view;
 
     private HubConnection hubConnection;
@@ -83,6 +85,10 @@ public class SignalRService extends Service {
         hubProxy.invoke(PRESS_BELL, message, id);
     }
 
+    public void sendText(String message, String id) {
+        hubProxy.invoke(SEND_MESSAGE, message);
+    }
+
     private void startSignalR() {
         Platform.loadPlatformComponent(new AndroidPlatformComponent());
 
@@ -106,6 +112,20 @@ public class SignalRService extends Service {
                             @Override
                             public void run() {
                                 view.requestSpeech();
+                            }
+                        });
+                    }
+                }
+                , String.class);
+
+        hubProxy.on(MESSAGE_RESPONDED,
+                new SubscriptionHandler1<String>() {
+                    @Override
+                    public void run(final String msg) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.speakMessage(msg);
                             }
                         });
                     }
