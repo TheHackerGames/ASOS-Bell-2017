@@ -31,7 +31,9 @@ namespace HackerGamesHub.Azure.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetImage([FromUri] string imageId)
         {
-            return Ok(await imageService.GetImage(imageId));
+            var content = await imageService.GetImage(imageId);
+            
+            return Ok(content);
         }
     }
 }

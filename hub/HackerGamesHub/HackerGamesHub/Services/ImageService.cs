@@ -1,12 +1,30 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace HackerGamesHub.Services
 {
     public class ImageService : IImageService
     {
-        private readonly ConcurrentDictionary<string, byte[]> images = new ConcurrentDictionary<string, byte[]>();
+        private readonly ConcurrentDictionary<string, byte[]> images;
+
+        public ImageService()
+        {
+            images = new ConcurrentDictionary<string, byte[]> {["asos"] = ReadAsosImage()};
+        }
+
+        private static byte[] ReadAsosImage()
+        {
+            using (var stream = typeof(ImageService).Assembly.GetManifestResourceStream("HackerGamesHub.asosphoto.jpg"))
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    stream?.CopyTo(memoryStream);
+                    return memoryStream.ToArray();
+                }
+            }
+        }
 
         public Task<string> SaveImage(byte[] imageContent)
         {

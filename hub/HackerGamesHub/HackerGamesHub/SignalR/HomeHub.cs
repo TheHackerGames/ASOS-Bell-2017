@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNet.SignalR;
+﻿using System.Collections.Generic;
+using Microsoft.AspNet.SignalR;
 
 namespace HackerGamesHub.SignalR
 {
     public class HomeHub : Hub
     {
-
         public void RegisterBell()
         {
             Groups.Add(Context.ConnectionId, GroupNames.Bell);
@@ -15,9 +15,15 @@ namespace HackerGamesHub.SignalR
             Groups.Add(Context.ConnectionId, GroupNames.Home);
         }
 
+        public void RegisterHue()
+        {
+            Groups.Add(Context.ConnectionId, GroupNames.Hue);
+        }
+
         public void PressBell(string message, string imageId)
         {
-            Clients.Group(GroupNames.Home).BellPressed(message, imageId);
+            var groups = new List<string> { GroupNames.Home, GroupNames.Hue };
+            Clients.Groups(groups).BellPressed(message, imageId);
         }
 
         public void AcceptHome(string message)
@@ -30,5 +36,6 @@ namespace HackerGamesHub.SignalR
     {
         public const string Bell = "Bell";
         public const string Home = "Home";
+        public const string Hue = "Hue";
     }
 }

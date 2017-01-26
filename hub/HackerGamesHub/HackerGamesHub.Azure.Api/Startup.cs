@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using Autofac.Integration.WebApi;
 using HackerGamesHub.Azure.Api;
 using HackerGamesHub.Azure.Api.Infrastructure;
 using Microsoft.Owin;
@@ -25,6 +26,11 @@ namespace HackerGamesHub.Azure.Api
 
             app.MapSignalR();
 
+            var container = ContainerConfig.Configure();
+
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+
+            app.UseAutofacMiddleware(container);
             app.UseAutofacWebApi(config);
 
             app.UseWebApi(config);

@@ -92,6 +92,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="asosphoto.jpg" />
     <Content Include="sample-client\Bell.html" />
     <Content Include="sample-client\Home.html" />
     <Content Include="sample-client\Scripts\jquery-1.6.4-vsdoc.js" />
