@@ -8,6 +8,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.asos.hackergames.hackergamesdoorbell.doorbell.model.DoorbellFunctions;
+
 import java.util.concurrent.ExecutionException;
 
 import microsoft.aspnet.signalr.client.Platform;
@@ -22,6 +24,7 @@ import microsoft.aspnet.signalr.client.transport.LongPollingTransport;
 public class SignalRService extends Service {
 
     private static final String SERVER_URL = "http://hackergameshubazureapi.azurewebsites.net";
+
     public static final String SERVER_HUB_CHAT = "HomeHub";
     public static final String PRESS_BELL = "PressBell";
 
@@ -77,18 +80,14 @@ public class SignalRService extends Service {
         hubProxy.invoke(PRESS_BELL, message, id);
     }
 
+    public void sendMessage(@DoorbellFunctions final String key, String message, String id) {
+        hubProxy.invoke(key, message, id);
+    }
+
     private void startSignalR() {
         Platform.loadPlatformComponent(new AndroidPlatformComponent());
 
-//        Credentials credentials = new Credentials() {
-//            @Override
-//            public void prepareRequest(Request request) {
-//                request.addHeader("User-Name", "BNK");
-//            }
-//        };
-
         hubConnection = new HubConnection(SERVER_URL);
-//        hubConnection.setCredentials(credentials);
         hubProxy = hubConnection.createHubProxy(SERVER_HUB_CHAT);
         ClientTransport clientTransport = new LongPollingTransport(hubConnection.getLogger());
         SignalRFuture<Void> signalRFuture = hubConnection.start(clientTransport);
