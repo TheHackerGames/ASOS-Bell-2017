@@ -27,6 +27,7 @@ public class DoorbellActivity extends BaseActivity implements DoorbellView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = DoorbellModule.presenter(this);
+//        Platform.loadPlatformComponent(new AndroidPlatformComponent());
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
