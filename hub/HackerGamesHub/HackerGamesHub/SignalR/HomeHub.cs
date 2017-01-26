@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR;
 
-namespace HackerGamesHub
+namespace HackerGamesHub.SignalR
 {
     public class HomeHub : Hub
     {
