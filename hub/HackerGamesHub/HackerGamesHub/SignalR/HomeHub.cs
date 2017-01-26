@@ -5,6 +5,8 @@ namespace HackerGamesHub.SignalR
 {
     public class HomeHub : Hub
     {
+        private static readonly List<string> BellPressedSubscribers = new List<string> { GroupNames.Home, GroupNames.Hue };
+
         public void RegisterBell()
         {
             Groups.Add(Context.ConnectionId, GroupNames.Bell);
@@ -22,8 +24,7 @@ namespace HackerGamesHub.SignalR
 
         public void PressBell(string message, string imageId)
         {
-            var groups = new List<string> { GroupNames.Home, GroupNames.Hue };
-            Clients.Groups(groups).BellPressed(message, imageId);
+            Clients.Groups(BellPressedSubscribers).BellPressed(message, imageId);
         }
 
         public void AcceptHome(string message)
