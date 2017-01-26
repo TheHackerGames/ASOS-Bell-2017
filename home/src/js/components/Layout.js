@@ -11,7 +11,12 @@ export default class Layout extends React.Component {
     this.state = {
       image: "img/locked.jpg",
       callState : 0,
-      messages:["first message"]
+      messages:[
+        {
+          "name":"message you",
+          "message":"Hello who is it"
+        }
+      ]
     };
 
     $.connection.hub.url = "http://hackergameshubazureapi.azurewebsites.net/signalr";
@@ -21,6 +26,11 @@ export default class Layout extends React.Component {
           this.changeImage("http://hackergameshubazureapi.azurewebsites.net/api/image/asos");
           this.setState({callState:1});
 
+        }.bind(this);
+
+
+        this.chat.client.messageSent = function (message) {
+          this.updateMessage(message,"guest");
         }.bind(this);
            $.connection.hub.start().done(function () {
              this.chat.server.registerHome();
@@ -48,15 +58,30 @@ export default class Layout extends React.Component {
     this.setState({callState:0});
 
   }
+
+
   acceptCall(){
     $.connection.hub.start().done(function () {
          this.chat.server.acceptHome("Accepted");
          this.setState({callState:2})
          this.changeImage("img/delivery.jpg");
-      }.bind(this));
-  }
-  sendMessage(meesage){
 
+      }.bind(this));
+
+  }
+
+
+  updateMessage(message,type){
+    var messageArray = this.state.messages;
+    messageArray.push(  {
+        "name":"message "+type,
+        "message": message
+      });
+
+    this.setState({messages:messageArray});
+    if(type==="you"){
+      this.chat.server.respondMessage(message);
+    }
   }
 
   render() {
@@ -64,7 +89,7 @@ export default class Layout extends React.Component {
       <div>
         <Video image={this.state.image}/>
         { this.state.callState === 1 ? <Accept acceptCall={this.acceptCall.bind(this)} />: null }
-        { this.state.callState === 2 ? <Chat messages={this.state.messages} />: null }
+        { this.state.callState === 2 ? <Chat updateMessage={this.updateMessage.bind(this)} messages={this.state.messages} />: null }
 
         <ActionButtons rejectCall={this.rejectCall.bind(this)} openDoor={this.openDoor.bind(this)}/>
 

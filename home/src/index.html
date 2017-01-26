@@ -45,6 +45,72 @@
         padding-top:15px;
         padding-bottom:15px;
       }
+      .chatArea{
+        width:100%;
+        float:left;
+        height:200px;
+        overflow-x: scroll;
+        padding-bottom:10px;
+      }
+      .chatArea .message{
+        width:80%;
+        margin-top:10px;
+        border-radius: 15px;
+        padding:5px;
+        font-size:20px;
+        position:relative;
+        padding-left:20px;
+
+      }
+      .chatArea .you{
+        background-color:#e3ffca;
+        color:#000;
+        float:right;
+        margin-right:10px;
+        position:relative;
+      }
+      .chatArea .you:after{
+        content:"";
+        position:absolute;
+        width:0px;
+        height:0px;
+        right: -7px;
+        bottom:4px;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        border-left: 12px solid #e3ffca;
+      }
+      .chatArea .guest{
+        background-color:#fff;
+        color:#000;
+        float:left;
+        margin-left:10px;
+      }
+      .chatArea .guest:after{
+        content:"";
+        position:absolute;
+        width:0px;
+        height:0px;
+        left: -8px;
+        bottom:6px;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        border-right: 12px solid #fff;
+      }
+      .chatSend {
+        float:left;
+        width:90%;
+        margin-top:20px;
+        margin-left:5%;
+
+      }
+      .chatSend .chatInput{
+        float:left;
+        width:100%;
+        height:30px;
+        border-radius: 5px;
+      }
+
     </style>
     <div id="app"></div>
     <script src="js/lib/jquery-1.6.4.min.js"></script>
