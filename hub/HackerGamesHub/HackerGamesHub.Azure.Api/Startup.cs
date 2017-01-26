@@ -25,6 +25,8 @@ namespace HackerGamesHub.Azure.Api
 
             app.MapSignalR();
 
+            app.UseAutofacWebApi(config);
+
             app.UseWebApi(config);
         }
     }
