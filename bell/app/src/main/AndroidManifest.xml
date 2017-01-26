@@ -2,6 +2,9 @@
     package="com.asos.hackergames.hackergamesdoorbell">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application

@@ -21,9 +21,9 @@ import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import microsoft.aspnet.signalr.client.transport.ClientTransport;
 import microsoft.aspnet.signalr.client.transport.LongPollingTransport;
 
-public class SignalRService extends Service {
+import static com.asos.hackergames.hackergamesdoorbell.doorbell.model.DoorbellApi.SERVER_URL;
 
-    private static final String SERVER_URL = "http://hackergameshubazureapi.azurewebsites.net";
+public class SignalRService extends Service {
 
     public static final String SERVER_HUB_CHAT = "HomeHub";
     public static final String PRESS_BELL = "PressBell";
