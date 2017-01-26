@@ -20,14 +20,17 @@ namespace HackerGamesHub.Azure.Api.Controllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> SaveImage([FromBody] byte[] image)
+        public async Task<IHttpActionResult> SaveImage()
         {
-            if (image == null || image.Length == 0)
+            if (!Request.Content.Headers.ContentLength.HasValue ||
+                Request.Content.Headers.ContentLength.Value == 0)
             {
                 return BadRequest();
             }
+            var image = await Request.Content.ReadAsByteArrayAsync();
 
             var imageId = await imageService.SaveImage(image);
+
             return Created(BuildUri(imageId), image);
         }
 
