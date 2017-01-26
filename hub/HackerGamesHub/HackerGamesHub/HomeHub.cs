@@ -15,12 +15,12 @@ namespace HackerGamesHub
             Groups.Add(Context.ConnectionId, GroupNames.Home);
         }
 
-        public void BellPressed(string message, string imageId)
+        public void PressBell(string message, string imageId)
         {
             Clients.Group(GroupNames.Home).BellPressed(message, imageId);
         }
 
-        public void HomeAccepted(string message)
+        public void AcceptHome(string message)
         {
             Clients.Group(GroupNames.Bell).HomeAccepted(message);
         }
