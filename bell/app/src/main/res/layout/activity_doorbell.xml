@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
@@ -11,4 +13,16 @@
         android:layout_height="192dp"
         android:contentDescription="@string/a_doorbell"
         android:src="@drawable/shape_doorbell" />
+
+    <TextView
+        android:id="@+id/user_voice_output"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="I'm here to make a delivery"
+        tools:visibility="visible" />
 </LinearLayout>
