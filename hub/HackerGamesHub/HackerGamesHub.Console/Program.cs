@@ -1,9 +1,11 @@
 ﻿using System;
-using Microsoft.Owin.Cors;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
-using Owin;
 
-namespace HackerGamesHub
+namespace HackerGamesHub.Console
 {
     public class Program
     {
@@ -14,19 +16,11 @@ namespace HackerGamesHub
             // See http://msdn.microsoft.com/en-us/library/system.net.httplistener.aspx 
             // for more information.
             string url = "http://localhost:8080";
-            using (WebApp.Start(url))
+            using (WebApp.Start<Startup>(url))
             {
-                Console.WriteLine("Server running on {0}", url);
-                Console.ReadLine();
+                System.Console.WriteLine("Server running on {0}", url);
+                System.Console.ReadLine();
             }
-        }
-    }
-    class Startup
-    {
-        public void Configuration(IAppBuilder app)
-        {
-            app.UseCors(CorsOptions.AllowAll);
-            app.MapSignalR();
         }
     }
 }
