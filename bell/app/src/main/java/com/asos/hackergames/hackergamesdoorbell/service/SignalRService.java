@@ -6,9 +6,9 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.widget.Toast;
+import android.support.annotation.NonNull;
 
-import com.asos.hackergames.hackergamesdoorbell.doorbell.model.DoorbellFunctions;
+import com.asos.hackergames.hackergamesdoorbell.doorbell.view.DoorbellView;
 
 import java.util.concurrent.ExecutionException;
 
@@ -27,6 +27,8 @@ public class SignalRService extends Service {
 
     public static final String SERVER_HUB_CHAT = "HomeHub";
     public static final String PRESS_BELL = "PressBell";
+    public static final String ACCEPT_HOME = "HomeAccepted";
+    private DoorbellView view;
 
     private HubConnection hubConnection;
     private HubProxy hubProxy;
@@ -62,6 +64,10 @@ public class SignalRService extends Service {
         return binder;
     }
 
+    public void setView(@NonNull final DoorbellView view) {
+        this.view = view;
+    }
+
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
@@ -73,15 +79,8 @@ public class SignalRService extends Service {
         }
     }
 
-    /**
-     * method for clients (activities)
-     */
-    public void sendMessage(String message, String id) {
+    public void pressBell(String message, String id) {
         hubProxy.invoke(PRESS_BELL, message, id);
-    }
-
-    public void sendMessage(@DoorbellFunctions final String key, String message, String id) {
-        hubProxy.invoke(key, message, id);
     }
 
     private void startSignalR() {
@@ -99,23 +98,20 @@ public class SignalRService extends Service {
             return;
         }
 
-        sendMessage("Initialising", "id");
-
-        String CLIENT_METHOD_BROADAST_MESSAGE = "broadcastMessage";
-        hubProxy.on(CLIENT_METHOD_BROADAST_MESSAGE,
-                new SubscriptionHandler1<CustomMessage>() {
+        hubProxy.on(ACCEPT_HOME,
+                new SubscriptionHandler1<String>() {
                     @Override
-                    public void run(final CustomMessage msg) {
-                        final String finalMsg = msg.UserName + " says " + msg.Message;
-                        // display Toast message
+                    public void run(final String msg) {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(getApplicationContext(), finalMsg, Toast.LENGTH_SHORT).show();
+                                view.requestSpeech();
                             }
                         });
                     }
                 }
-                , CustomMessage.class);
+                , String.class);
+
+        hubProxy.invoke("RegisterBell");
     }
 }

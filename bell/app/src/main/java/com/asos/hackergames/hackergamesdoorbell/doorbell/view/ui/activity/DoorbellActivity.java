@@ -1,9 +1,12 @@
 package com.asos.hackergames.hackergamesdoorbell.doorbell.view.ui.activity;
 
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.view.View;
@@ -14,7 +17,8 @@ import com.asos.hackergames.hackergamesdoorbell.R;
 import com.asos.hackergames.hackergamesdoorbell.doorbell.presenter.DoorbellModule;
 import com.asos.hackergames.hackergamesdoorbell.doorbell.presenter.DoorbellPresenter;
 import com.asos.hackergames.hackergamesdoorbell.doorbell.view.DoorbellView;
-import com.asos.hackergames.hackergamesdoorbell.view.ui.activity.ServiceAwareActivity;
+import com.asos.hackergames.hackergamesdoorbell.service.SignalRService;
+import com.asos.hackergames.hackergamesdoorbell.view.ui.activity.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -24,12 +28,15 @@ import butterknife.OnClick;
 
 import static android.view.View.GONE;
 
-public class DoorbellActivity extends ServiceAwareActivity implements DoorbellView {
+public class DoorbellActivity extends BaseActivity implements DoorbellView {
 
     private static final int REQ_CODE_SPEECH_INPUT = 99;
 
     private Vibrator vibrator;
     private DoorbellPresenter presenter;
+
+    private boolean bound = false;
+    private SignalRService service;
 
     @BindView(R.id.user_voice_output)
     TextView userText;
@@ -42,6 +49,10 @@ public class DoorbellActivity extends ServiceAwareActivity implements DoorbellVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = new Intent();
+        intent.setClass(this, SignalRService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         presenter = DoorbellModule.presenter(this);
     }
@@ -56,7 +67,7 @@ public class DoorbellActivity extends ServiceAwareActivity implements DoorbellVi
         userText.setVisibility(GONE);
         vibrator.vibrate(400);
         presenter.pushDoorBell();
-        getService().sendMessage("Ding dong", "image id");
+        service.pressBell("Ding dong", "image id");
     }
 
     @Override
@@ -97,4 +108,35 @@ public class DoorbellActivity extends ServiceAwareActivity implements DoorbellVi
 
         }
     }
+
+    @Override
+    protected void onStop() {
+        // Unbind from the service
+        if (bound) {
+            unbindService(serviceConnection);
+            bound = false;
+        }
+        super.onStop();
+    }
+
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder localBinder) {
+            // We've bound to SignalRService, cast the IBinder and get SignalRService instance
+            SignalRService.LocalBinder binder = (SignalRService.LocalBinder) localBinder;
+            service = binder.getService();
+            service.setView(DoorbellActivity.this);
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            bound = false;
+        }
+    };
 }

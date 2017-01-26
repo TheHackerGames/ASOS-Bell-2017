@@ -13,6 +13,5 @@ public class DoorbellPresenter {
     }
 
     public void pushDoorBell() {
-        view.requestSpeech();
     }
 }
