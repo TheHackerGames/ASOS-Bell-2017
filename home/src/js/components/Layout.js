@@ -20,6 +20,14 @@ export default class Layout extends React.Component {
         }
       ]
     };
+    // var audioElement2;
+    // if(!audioElement2) {
+    //   audioElement2 = document.createElement('audio');
+    //   audioElement2.innerHTML = '<source src="' + 'sound/20381835.mp3'+ '" type="audio/mpeg" />'
+    // }
+    // audioElement2.play();
+
+
 
     $.connection.hub.url = "http://hackergameshubazureapi.azurewebsites.net/signalr";
     this.chat = $.connection.homeHub;
@@ -54,6 +62,7 @@ export default class Layout extends React.Component {
             console.log("add user"+users[i]);
 
           }
+          responsiveVoice.speak(userArray+ " is at the door");
 
         }.bind(this);
 
