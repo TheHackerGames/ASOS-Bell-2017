@@ -31,6 +31,13 @@ namespace HackerGamesHub.Services
         public async Task Identify(Uri imageLocation)
         {
             var detectedFaces = await faceClient.DetectAsync(imageLocation.ToString());
+
+            if (!detectedFaces.Any())
+            {
+                RaiseUnknownFaces();
+                return;
+            }
+
             var faceIds = detectedFaces.Select(f => f.FaceId).ToArray();
             var identifyResults = await faceClient.IdentifyAsync(FriendsGroupId, faceIds, ConfidenceThreshold);
 
