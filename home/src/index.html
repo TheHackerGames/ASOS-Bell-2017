@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <meta charset="utf-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 
     <title>Home</title>
   </head>
@@ -24,6 +23,8 @@
         height:736px;
         background-color:#5b99ec;
         float:left;
+        background-image:url("img/bg.jpg");
+        background-size: cover;
       }
       .unlocked{
         background-color:#82c882;
@@ -34,7 +35,9 @@
         border-radius:15px;
         overflow:hidden;
         margin-top:10px;
-
+        height:316px;
+        overflow:hidden;
+        position: relative;
 
       }
       .videoCon img{
@@ -49,7 +52,7 @@
         text-align:center;
       }
       .unlocked .actionButtons .button{
-        color:#82c882;
+        color:#000;
       }
       .answerTitle{
         color:#fff;
@@ -61,7 +64,7 @@
         padding-bottom:15px;
         background-color:#fff;
         display: inline-block;
-        color:#5b99ec;
+        color:#000;
         margin-left:10px;
         margin-right:10px;
         border-radius:15px;
@@ -107,7 +110,7 @@
 
       }
       .chatArea .you{
-        background-color:#e3ffca;
+        background-color:orange;
         color:#000;
         float:right;
         margin-right:10px;
@@ -122,15 +125,15 @@
         bottom:4px;
         border-top: 12px solid transparent;
         border-bottom: 12px solid transparent;
-        border-left: 12px solid #e3ffca;
+        border-left: 12px solid orange;
       }
-      .chatArea .guest{
-        background-color:#fff;
+      .chatArea .guest, .chatArea .computer{
+        background-color:#e3ffca;
         color:#000;
         float:left;
         margin-left:10px;
       }
-      .chatArea .guest:after{
+      .chatArea .guest:after, .chatArea .computer:after{
         content:"";
         position:absolute;
         width:0px;
@@ -140,6 +143,12 @@
         border-top: 12px solid transparent;
         border-bottom: 12px solid transparent;
         border-right: 12px solid #fff;
+      }
+      .chatArea .computer{
+        background-color:#e3ffca;
+      }
+      .chatArea .computer:after{
+        border-right: 12px solid #e3ffca;
       }
       .chatSend {
         position: absolute;
@@ -154,6 +163,29 @@
         margin-left:5%;
         height:30px;
         border-radius: 5px;
+        padding-left:10px;
+      }
+      .userScreen{
+        width:100%;
+        height:500px;
+        position: absolute;
+        top:0;
+        left:0;
+      }
+      .userScreen img{
+        width:80px;
+        height:80px;
+        position: absolute;
+        left:50%;
+        margin-left:-40px;
+        top:110px;
+        display: none;
+      }
+      .knownUser{
+        background-color:rgba(130,200,130,0.5);
+      }
+      .userScreen.knownUser img{
+        display: block;
       }
 
     </style>
