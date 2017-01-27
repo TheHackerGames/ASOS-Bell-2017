@@ -56,6 +56,8 @@ namespace Asos.Hue.Api.Models
                     Brightness = 0;
                     Hue = 0;
                     break;
+                default:
+                    throw new InvalidOperationException("Incorrect Color");
             }
         }
     }

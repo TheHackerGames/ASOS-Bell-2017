@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Asos.Hue.Api;
 using Asos.Hue.Api.Enums;
@@ -18,7 +19,7 @@ namespace SignalRClient
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("*** Hue Api Client started ***");
+            Console.WriteLine("*** Hue SignalR Client started ***");
             var initialiseSuccess = false;
 
             while (!initialiseSuccess)
@@ -28,9 +29,7 @@ namespace SignalRClient
 
             StartAsync().Wait();
 
-            Console.WriteLine("*** Press Enter to exit application***");
             Console.ReadLine();
-            Console.WriteLine("*** Exiting Hue Api Client started ***");
         }
 
         private static async Task<bool> Initialise()
@@ -61,40 +60,42 @@ namespace SignalRClient
         }
         private static async Task StartAsync()
         {
-            Console.WriteLine("Connecting to Server...");
+            Console.WriteLine("\nConnecting to SignalR Server...");
             var client = new HubClient(GlobalConfig.SignalRHost);
             client.CreateProxy(GlobalConfig.SignalRHub);
 
             await client.Start();
 
             //client.RegisterHandler<string, string>(SignalREvent.BellPressed, BellPressedHandler);
-            client.RegisterHandler<string, string>(SignalREvent.FacesIdentified, FacesIdentifiedHandler);
-            client.RegisterHandler<string, string>(SignalREvent.FacesUnknown, FacesUnknownHandler);
+            client.RegisterHandler<string>(SignalREvent.FacesIdentified, FacesIdentifiedHandler);
+            client.RegisterHandler<string>(SignalREvent.FacesUnknown, FacesUnknownHandler);
 
             await client.RegisterClient(GlobalConfig.SignalRClientName);
 
-            Console.WriteLine($"Connected to client: {GlobalConfig.SignalRClientName}\n");
-            Console.WriteLine($"Listening On {GlobalConfig.SignalRHost}, Client name: {GlobalConfig.SignalRClientName}, Hub: {GlobalConfig.SignalRHub}\n");
+            Console.WriteLine($"Connected to client: {GlobalConfig.SignalRHost}, Client name: {GlobalConfig.SignalRClientName}, Hub: {GlobalConfig.SignalRHub}\n");
             Console.WriteLine("Waiting for events...\n");
         }
 
-        private static async void FacesIdentifiedHandler(string msg, string id)
+        private static void FacesIdentifiedHandler(string msg)
         {
-            Console.WriteLine($"Faces Identified Received: {msg} Id: {id}, Hue Flashing...");
-            await RunHue(HueColor.Green);
-            Console.WriteLine("*** Handler action complete ***");
+            Console.WriteLine("*** Faces Identified ***");
+            Console.WriteLine($"\tFaces Identified Received: {msg}, Hue Flashing...");
+            RunHue(HueColor.Green).Wait();
+            Console.WriteLine("*** Handler action completed ***\t");
         }
-        private static async void FacesUnknownHandler(string msg, string id)
+        private static void FacesUnknownHandler(string msg)
         {
-            Console.WriteLine($"Faces Unknown Received: {msg} Id: {id}, Hue Flashing...");
-            await RunHue(HueColor.Red);
-            Console.WriteLine("*** Handler action complete ***");
+            Console.WriteLine("*** Faces Unknown ***");
+            Console.WriteLine($"\tFaces Unknown Received: {msg}, Hue Flashing...");
+            RunHue(HueColor.Orange).Wait();
+            Console.WriteLine("*** Handler action completed ***\t");
         }
-        private static async void BellPressedHandler(string msg, string id)
+        private static void BellPressedHandler(string msg, string id)
         {
-            Console.WriteLine($"Bell Pressed Received: {msg} Id: {id}, Hue Flashing...");
-            await RunHue(HueColor.White);
-            Console.WriteLine("*** Handler action complete ***");
+            Console.WriteLine("*** Bell Pressed ***");
+            Console.WriteLine($"\tBell Pressed Received: {msg} Id: {id}, Hue Flashing...");
+            RunHue(HueColor.White).Wait();
+            Console.WriteLine("*** Handler action completed ***\t");
         }
         private static async Task RunHue(HueColor color)
         {
@@ -107,11 +108,16 @@ namespace SignalRClient
 
             var bulbs = await hue.GetAllBulbs();
 
+            if (!bulbs.Any())
+            {
+                Console.WriteLine("\tNo bulbs online to flash...");
+                return;
+            }
             foreach (var b in bulbs)
             {
                 if (b.Reachable)
                 {
-                    Console.WriteLine($"{b.Name} is flashing {color}...");
+                    Console.WriteLine($"\t{b.Name} is flashing {color}...");
                     await hue.Flash(b, color);
                 }
             }
