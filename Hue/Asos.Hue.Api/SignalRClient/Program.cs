@@ -18,7 +18,7 @@ namespace SignalRClient
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("*** Hue Api Client started ***");
+            Console.WriteLine("*** Hue SignalR Client started ***");
             var initialiseSuccess = false;
 
             while (!initialiseSuccess)
@@ -61,20 +61,19 @@ namespace SignalRClient
         }
         private static async Task StartAsync()
         {
-            Console.WriteLine("Connecting to Server...");
+            Console.WriteLine("\nConnecting to SignalR Server...");
             var client = new HubClient(GlobalConfig.SignalRHost);
             client.CreateProxy(GlobalConfig.SignalRHub);
 
             await client.Start();
 
-            //client.RegisterHandler<string, string>(SignalREvent.BellPressed, BellPressedHandler);
+            client.RegisterHandler<string, string>(SignalREvent.BellPressed, BellPressedHandler);
             client.RegisterHandler<string, string>(SignalREvent.FacesIdentified, FacesIdentifiedHandler);
             client.RegisterHandler<string, string>(SignalREvent.FacesUnknown, FacesUnknownHandler);
 
             await client.RegisterClient(GlobalConfig.SignalRClientName);
 
-            Console.WriteLine($"Connected to client: {GlobalConfig.SignalRClientName}\n");
-            Console.WriteLine($"Listening On {GlobalConfig.SignalRHost}, Client name: {GlobalConfig.SignalRClientName}, Hub: {GlobalConfig.SignalRHub}\n");
+            Console.WriteLine($"Connected to client: {GlobalConfig.SignalRHost}, Client name: {GlobalConfig.SignalRClientName}, Hub: {GlobalConfig.SignalRHub}\n");
             Console.WriteLine("Waiting for events...\n");
         }
 
@@ -107,6 +106,11 @@ namespace SignalRClient
 
             var bulbs = await hue.GetAllBulbs();
 
+            if (bulbs.Any())
+            {
+                Console.WriteLine("No bulbs online to flash...");
+                return;
+            }
             foreach (var b in bulbs)
             {
                 if (b.Reachable)
