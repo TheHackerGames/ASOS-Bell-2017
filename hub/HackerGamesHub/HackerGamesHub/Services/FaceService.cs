@@ -72,14 +72,6 @@ namespace HackerGamesHub.Services
 
             var namesJoined = string.Join(", ", names);
             builder.Append(namesJoined);
-            
-            builder.Append(" appear");
-
-            if (candidates.Count == 1)
-            {
-                builder.Append("s");
-            }
-            builder.Append(" to be at your door.");
 
             return builder.ToString();
         }
