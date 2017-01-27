@@ -41,7 +41,7 @@
 			
             $.connection.hub.start().done(function () {
 				$('#pressBell').click(function(){
-					chat.server.pressBell("pressed", "myimageId");
+				    chat.server.pressBell("pressed", "http://hackergameshubazureapi.azurewebsites.net/api/image/asos");
 				});
 				
 				chat.server.registerBell();

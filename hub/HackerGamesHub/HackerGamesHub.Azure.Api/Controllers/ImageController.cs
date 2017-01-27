@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -54,6 +55,17 @@ namespace HackerGamesHub.Azure.Api.Controllers
             }
 
             return new ImageResult(content, "image/png");
+        }
+
+        [HttpGet]
+        [Route("all")]
+        public async Task<IHttpActionResult> GetAll()
+        {
+            var ids = await imageService.GetAllImageIds();
+
+            var allImageUris = ids.Select(BuildUri);
+
+            return Ok(allImageUris);
         }
     }
 }
