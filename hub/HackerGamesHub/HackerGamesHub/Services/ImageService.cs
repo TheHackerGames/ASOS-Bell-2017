@@ -28,6 +28,11 @@ namespace HackerGamesHub.Services
             }
         }
 
+        public void SaveImageWithId(string imageId, byte[] imageContent)
+        {
+            images[imageId] = imageContent;
+        }
+
         public Task<string> SaveImage(byte[] imageContent)
         {
             var imageId = Guid.NewGuid().ToString();

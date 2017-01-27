@@ -9,5 +9,6 @@ namespace HackerGamesHub.Services
         Task<string> SaveImage(byte[] imageContent);
         Task<byte[]> GetImage(string imageId);
         Task<IEnumerable<string>> GetAllImageIds();
+        void SaveImageWithId(string imageId, byte[] imageContent);
     }
 }

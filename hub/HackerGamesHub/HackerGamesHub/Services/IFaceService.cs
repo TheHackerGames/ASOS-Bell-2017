@@ -5,6 +5,6 @@ namespace HackerGamesHub.Services
 {
     public interface IFaceService
     {
-        Task Identify(Uri imageLocation);
+        Task Identify(string imageId, Uri imageLocation);
     }
 }

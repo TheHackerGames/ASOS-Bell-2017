@@ -36,8 +36,9 @@ namespace HackerGamesHub.Azure.Api.Controllers
 
             var location = BuildUri(imageId);
 
-            Task.Run(() => faceService.Identify(location));
-            return Created(location, image);
+            Task.Run(() => faceService.Identify(imageId, location));
+
+            return Created(location, string.Empty);
         }
 
         private Uri BuildUri(string imageId)
