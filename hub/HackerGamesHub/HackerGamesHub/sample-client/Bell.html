@@ -28,8 +28,8 @@
     <script type="text/javascript">
         $(function () {
         //Set the hubs URL for the connection
-            $.connection.hub.url = "http://localhost:43807/signalr";
-            //$.connection.hub.url = "http://hackergameshubazureapi.azurewebsites.net/signalr";
+            //$.connection.hub.url = "http://localhost:43807/signalr";
+            $.connection.hub.url = "http://hackergameshubazureapi.azurewebsites.net/signalr";
             
             // Declare a proxy to reference the hub.
             var chat = $.connection.homeHub;
@@ -41,7 +41,7 @@
 			
             $.connection.hub.start().done(function () {
 				$('#pressBell').click(function(){
-				    chat.server.pressBell("pressed", "http://localhost:43807/api/image/asos");
+				    chat.server.pressBell("pressed", "http://hackergameshubazureapi.azurewebsites.net/api/image/asos");
 				});
 				
 				chat.server.registerBell();
