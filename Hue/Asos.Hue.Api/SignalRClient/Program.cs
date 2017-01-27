@@ -46,7 +46,7 @@ namespace SignalRClient
             if (bulbs.Count == 0)
             {
                 Console.WriteLine($"Connecting to Hue Api: {GlobalConfig.HueApiUrl} failed, please enter endpoint url");
-                GlobalConfig.HueApiUrl = Console.ReadLine();
+                //GlobalConfig.HueApiUrl = Console.ReadLine();
                 return false;
             };
 

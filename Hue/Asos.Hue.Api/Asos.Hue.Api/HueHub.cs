@@ -75,7 +75,7 @@ namespace Asos.Hue.Api
 
             response.EnsureSuccessStatusCode();
         }
-        public async Task Flash(Bulb bulb, HueColor color = HueColor.Default, int cycles = 3)
+        public async Task Flash(Bulb bulb, HueColor color = HueColor.Default, int cycles = 4)
         {
             //TODO: A bit broken
             while (cycles > 0)

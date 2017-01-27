@@ -14,6 +14,6 @@ namespace Asos.Hue.Api.Interfaces
         Task TurnOn(Bulb lightNumber, HueColor color = HueColor.Default);
         Task TurnOff(Bulb lightNumber, HueColor color = HueColor.Default);
         Task Toggle(Bulb lightNumber, HueColor color = HueColor.Default);
-        Task Flash(Bulb lightNumber, HueColor color = HueColor.Default, int cycles= 3);
+        Task Flash(Bulb lightNumber, HueColor color = HueColor.Default, int cycles= 4);
     }
 }
