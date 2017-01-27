@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HackerGamesHub.Services
@@ -7,5 +8,6 @@ namespace HackerGamesHub.Services
     {
         Task<string> SaveImage(byte[] imageContent);
         Task<byte[]> GetImage(string imageId);
+        Task<IEnumerable<string>> GetAllImageIds();
     }
 }

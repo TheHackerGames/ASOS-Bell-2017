@@ -40,6 +40,12 @@
 				$('#accept').show();
             };
 
+            chat.client.messageSent = function (message) {
+                alert(message);
+                console.log(message);
+                $('#accept').show();
+            };
+
             $.connection.hub.start().done(function () {
 				$('#accept').click(function(){
 					chat.server.acceptHome("Accepted");

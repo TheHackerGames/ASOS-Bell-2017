@@ -13,8 +13,7 @@
 </head>
 <body>
     <div class="container">
-		<p id="message"></p>
-        <input type="button" id="pressBell" value="Press Bell" />
+		<ul id="messages"></ul>
     </div>
     <!--Script references. -->
     <!--Reference the jQuery library. -->
@@ -30,22 +29,44 @@
         //Set the hubs URL for the connection
             //$.connection.hub.url = "http://localhost:43807/signalr";
             $.connection.hub.url = "http://hackergameshubazureapi.azurewebsites.net/signalr";
-            
+
             // Declare a proxy to reference the hub.
             var chat = $.connection.homeHub;
-            
-            // Create a function that the hub can call to broadcast messages.
-            chat.client.HomeAccepted = function (message) {
-				alert(message);
-            };
+
+			var appendMessage = function (eventName, args) {
+				$('#messages').append(
+					$('<li>').append(eventName + " - " + args)
+				);
+			}
 			
+            chat.client.bellPressed = function () {
+				appendMessage("bellPressed", arguments);
+            };
+            chat.client.homeAccepted = function () {
+				appendMessage("homeAccepted", arguments);
+            };
+            chat.client.messageSent = function () {
+				appendMessage("messageSent", arguments);
+            };
+            chat.client.messageResponded = function () {
+				appendMessage("messageResponded", arguments);
+            };
+            chat.client.doorOpened = function () {
+				appendMessage("doorOpened", arguments);
+            };
+            chat.client.ended = function () {
+				appendMessage("ended", arguments);
+            };
+            chat.client.facesUnknown = function () {
+				appendMessage("facesUnknown", arguments);
+            };
+            chat.client.facesIdentified = function () {
+				appendMessage("facesIdentified", arguments);
+            };
+
             $.connection.hub.start().done(function () {
-				$('#pressBell').click(function(){
-				    chat.server.pressBell("pressed", "http://hackergameshubazureapi.azurewebsites.net/api/image/asos");
-				});
-				
+				chat.server.registerHome();
 				chat.server.registerBell();
-				$('#message').html("Registered, Press bell");
             });
         });
     </script>

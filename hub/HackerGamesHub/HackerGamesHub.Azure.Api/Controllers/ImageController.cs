@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -12,10 +13,12 @@ namespace HackerGamesHub.Azure.Api.Controllers
     public class ImageController : ApiController
     {
         private readonly IImageService imageService;
+        private readonly IFaceService faceService;
 
-        public ImageController(IImageService imageService)
+        public ImageController(IImageService imageService, IFaceService faceService)
         {
             this.imageService = imageService;
+            this.faceService = faceService;
         }
 
         [HttpPost]
@@ -31,7 +34,10 @@ namespace HackerGamesHub.Azure.Api.Controllers
 
             var imageId = await imageService.SaveImage(image);
 
-            return Created(BuildUri(imageId), image);
+            var location = BuildUri(imageId);
+
+            Task.Run(() => faceService.Identify(location));
+            return Created(location, image);
         }
 
         private Uri BuildUri(string imageId)
@@ -54,6 +60,17 @@ namespace HackerGamesHub.Azure.Api.Controllers
             }
 
             return new ImageResult(content, "image/png");
+        }
+
+        [HttpGet]
+        [Route("all")]
+        public async Task<IHttpActionResult> GetAll()
+        {
+            var ids = await imageService.GetAllImageIds();
+
+            var allImageUris = ids.Select(BuildUri);
+
+            return Ok(allImageUris);
         }
     }
 }

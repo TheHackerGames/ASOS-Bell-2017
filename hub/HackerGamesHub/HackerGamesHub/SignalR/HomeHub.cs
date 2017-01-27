@@ -42,14 +42,14 @@ namespace HackerGamesHub.SignalR
             Clients.Group(GroupNames.Bell).MessageResponded(message);
         }
 
-        public void OpenDoor()
+        public void OpenDoor(string message)
         {
-            Clients.Group(GroupNames.Bell).DoorOpened();
+            Clients.Group(GroupNames.Bell).DoorOpened(message);
         }
 
-        public void End()
+        public void End(string message)
         {
-            Clients.Group(GroupNames.Bell).Ended();
+            Clients.Group(GroupNames.Bell).Ended(message);
         }
     }
 
