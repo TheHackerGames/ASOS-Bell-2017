@@ -4,10 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Asos.Hue.Api.Models
+namespace Asos.Hue.Api.Enums
 {
-    public class State
+    public enum HueColor
     {
-        public bool On { get; set; }
+        Green,
+        Red,
+        White,
+        Default,
+        Orange
     }
 }

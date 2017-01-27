@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Asos.Hue.Api.Enums;
 using Asos.Hue.Api.Interfaces;
 using Asos.Hue.Api.Models;
 using Asos.Hue.Api.Options;
@@ -26,42 +27,61 @@ namespace Asos.Hue.Api
             _httpClient = ConfigureHttpClient(options);
         }
 
-        //public async Task<List<Bulb>> GetAllBulbs()
-        //{
-        //    List<Bulb> bulbs = new List<Bulb>();
-        //    var uri = $"api/{_options.UserKey}/lights";
-        //    HttpResponseMessage response = await _httpClient.GetAsync(uri);
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var response = await response.Content.ReadAsStringAsync();
-        //        return 
-        //    }
-        //    return bulbs;
-        //}
+        public async Task<List<Bulb>> GetAllBulbs()
+        {
+            List<Bulb> bulbs = new List<Bulb>();
+            var uri = $"api/{_options.UserKey}/lights";
+            HttpResponseMessage response = await _httpClient.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
 
-        public async Task TurnOn(Bulb bulb)
+                try
+                {
+                    foreach (var json in JObject.Parse(content))
+                    {
+                        bulbs.Add(Bulb.ParseFromJson(json));
+                    }
+                }
+                catch (Exception)
+                {
+                    bulbs = null;
+                }
+            }
+            return bulbs;
+        }
+
+        public async Task TurnOn(Bulb bulb, HueColor color = HueColor.Default)
         {
-            var uri = bulb.OnOffEndpoint(_options.UserKey);
-            HttpResponseMessage response = await _httpClient.PutAsync(uri, new { on = true }, new JsonMediaTypeFormatter());
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(
+                bulb.OnOffEndpoint(_options.UserKey),
+                new PostJsonModel(isOn: true, color: color));
+
             response.EnsureSuccessStatusCode();
         }
-        public async Task TurnOff(Bulb bulb)
+        public async Task TurnOff(Bulb bulb, HueColor color = HueColor.Default)
         {
-            HttpResponseMessage response = await _httpClient.PutAsync(bulb.OnOffEndpoint(_options.UserKey), new { on = false }, new JsonMediaTypeFormatter());
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(
+                bulb.OnOffEndpoint(_options.UserKey),
+                new PostJsonModel(isOn: false, color: color));
+
             response.EnsureSuccessStatusCode();
         }
-        public async Task Toggle(Bulb bulb)
+        public async Task Toggle(Bulb bulb, HueColor color = HueColor.Default)
         {
-            HttpResponseMessage response = await _httpClient.PutAsync(bulb.OnOffEndpoint(_options.UserKey), new { on = !bulb.IsOn }, new JsonMediaTypeFormatter());
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync(
+                bulb.OnOffEndpoint(_options.UserKey),
+                new PostJsonModel(!bulb.IsOn, color));
+
             response.EnsureSuccessStatusCode();
         }
-        public async Task Flash(Bulb bulb, int durationInSeconds = 10)
+        public async Task Flash(Bulb bulb, HueColor color = HueColor.Default, int durationInSeconds = 10)
         {
             while (durationInSeconds > 0)
             {
-                await TurnOn(bulb);
+                await TurnOn(bulb, color);
                 Thread.Sleep(1000);
-                await TurnOff(bulb);
+                await TurnOff(bulb, color);
                 Thread.Sleep(1000);
                 durationInSeconds--;
             }
