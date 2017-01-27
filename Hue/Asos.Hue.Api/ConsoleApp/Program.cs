@@ -12,19 +12,19 @@ namespace ConsoleApp
 {
     class Program
     {
-        static  void Main(string[] args)
+        static void Main(string[] args)
         {
             Console.WriteLine("*** Test Client Started ***");
-            Console.WriteLine("*** Please enter: bulbs, on, off, toggle, flash, or q to exit");
+            Console.WriteLine("*** Please enter: bulbs, on, off, toggle, flash, green, orange or q to exit");
             Console.WriteLine();
             var input = Console.ReadLine();
 
-            while(!input.Equals("q", StringComparison.InvariantCultureIgnoreCase))
+            while (!input.Equals("q", StringComparison.InvariantCultureIgnoreCase))
             {
                 RunAsync(input).Wait();
                 input = Console.ReadLine();
             }
-         
+
             Console.ReadLine();
 
             Console.WriteLine("*** Exiting Test Client ***");
@@ -35,33 +35,46 @@ namespace ConsoleApp
             Console.WriteLine($"*** Executing '{action}' ***");
             IHue hue = new HueHub(new HueHubOptions() { Uri = GlobalConfig.HueApiUrl, UserKey = GlobalConfig.HueUserKey });
 
-            var bulb = new Bulb {  Id = 2 };
-            List<Bulb> bulbs = null;
-            switch (action.ToLower())
+            List<Bulb> bulbs = await hue.GetAllBulbs();
+
+            foreach (var bulb in bulbs)
             {
-                case "bulbs":
-                    bulbs = await hue.GetAllBulbs();
-                    foreach (var b in bulbs)
+                if (bulb.Reachable)
+                {
+                    switch (action.ToLower())
                     {
-                        Console.WriteLine($"{b.Name} is on: {b.IsOn} and reachable: {b.Reachable}");
+                        case "bulbs":
+                            bulbs = await hue.GetAllBulbs();
+                            foreach (var b in bulbs)
+                            {
+                                Console.WriteLine($"{b.Name} is on: {b.IsOn} and reachable: {b.Reachable}");
+                            }
+                            return;
+                        case "on":
+                            await hue.TurnOn(bulb, HueColor.White);
+                            break;
+                        case "off":
+                            await hue.TurnOff(bulb, HueColor.White);
+                            break;
+                        case "toggle":
+                            await hue.Toggle(bulb, HueColor.Green);
+                            break;
+                        case "flash":
+                            await hue.Flash(bulb, HueColor.White);
+                            break;
+                        case "green":
+                            await hue.Flash(bulb, HueColor.Green);
+                            break;
+                        case "orange":
+                            await hue.Flash(bulb, HueColor.Orange);
+                            break;
+                        default:
+                            await hue.Toggle(bulb, HueColor.Green);
+                            break;
                     }
-                    break;
-                case "on":
-                    await hue.TurnOn(bulb, HueColor.Green);
-                    break;
-                case "off":
-                    await hue.TurnOff(bulb, HueColor.Green);
-                    break;
-                case "toggle":
-                    await hue.Toggle(bulb, HueColor.Green);
-                    break;
-                case "flash":
-                    await hue.Flash(bulb, HueColor.Green);
-                    break;
-                default:
-                    await hue.Toggle(bulb, HueColor.Green);
-                    break;
+                }
             }
+
             Console.WriteLine("*** Finished Executing ***");
         }
     }

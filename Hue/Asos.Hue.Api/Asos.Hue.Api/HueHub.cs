@@ -75,15 +75,25 @@ namespace Asos.Hue.Api
 
             response.EnsureSuccessStatusCode();
         }
-        public async Task Flash(Bulb bulb, HueColor color = HueColor.Default, int durationInSeconds = 10)
+        public async Task Flash(Bulb bulb, HueColor color = HueColor.Default, int cycles = 3)
         {
-            while (durationInSeconds > 0)
+            //TODO: A bit broken
+            while (cycles > 0)
             {
                 await TurnOn(bulb, color);
                 Thread.Sleep(1000);
                 await TurnOff(bulb, color);
                 Thread.Sleep(1000);
-                durationInSeconds--;
+                cycles--;
+            }
+            //TODO: IsOn not the correct property to use and TurnOn and TurnOff should change state of bulb
+            if (bulb.IsOn) //reset
+            {
+                await TurnOn(bulb);
+            }
+            else
+            {
+                await TurnOff(bulb);
             }
         }
         public static HueHub Create(HueHubOptions options)
