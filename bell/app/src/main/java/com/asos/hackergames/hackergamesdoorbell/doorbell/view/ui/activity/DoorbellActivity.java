@@ -125,6 +125,11 @@ public class DoorbellActivity extends BaseActivity implements DoorbellView, Text
         presenter.pushDoorBell();
     }
 
+    @OnClick({R.id.access_granted, R.id.access_denied})
+    void onTapped() {
+        viewFlipper.setDisplayedChild(0);
+    }
+
     @Override
     public void requestSpeech() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
