@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">HackerGamesDoorBell</string>
     <string name="a_doorbell">A doorbell</string>
+    <string name="speech_prompt">Say something</string>
+    <string name="speech_not_supported">Dunno</string>
 </resources>

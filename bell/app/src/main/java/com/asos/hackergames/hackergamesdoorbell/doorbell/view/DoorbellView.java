@@ -4,5 +4,13 @@ public interface DoorbellView {
 
     void displayMessage(String s);
 
-    void onServiceBound(final boolean bound);
+    void requestSpeech();
+
+    void takePicture();
+
+    void speakMessage(String message);
+
+    void onDoorOpened();
+
+    void onRejected();
 }
