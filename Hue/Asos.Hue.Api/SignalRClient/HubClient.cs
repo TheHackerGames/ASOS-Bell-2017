@@ -36,7 +36,10 @@ namespace SignalRClient
             var operation = $"Register{name}";
              await _proxy.Invoke(operation);
         }
-        
+        public void RegisterHandler<T1>(SignalREvent eventName, Action<T1> handler)
+        {
+            _proxy.On<T1>(eventName.ToString(), handler);
+        }
         public void RegisterHandler<T1,T2>(SignalREvent eventName, Action<T1, T2> handler)
         {
              _proxy.On<T1, T2>(eventName.ToString(),  handler);

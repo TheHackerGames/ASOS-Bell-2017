@@ -9,7 +9,7 @@ namespace SignalRClient.Enum
     public enum SignalREvent
     {
         BellPressed,
-        FacesUnknown,
+        FacesUnknown, 
         FacesIdentified
     }
 }

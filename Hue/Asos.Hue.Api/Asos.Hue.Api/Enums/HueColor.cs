@@ -9,7 +9,6 @@ namespace Asos.Hue.Api.Enums
     public enum HueColor
     {
         Green,
-        Red,
         White,
         Default,
         Orange
