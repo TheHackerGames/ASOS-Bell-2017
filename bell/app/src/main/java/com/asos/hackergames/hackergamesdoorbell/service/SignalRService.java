@@ -30,6 +30,8 @@ public class SignalRService extends Service {
     public static final String ACCEPT_HOME = "HomeAccepted";
     public static final String SEND_MESSAGE = "SendMessage";
     public static final String MESSAGE_RESPONDED = "MessageResponded";
+    public static final String DOOR_OPEN = "DoorOpened";
+    public static final String ENDED = "Ended";
     private DoorbellView view;
 
     private HubConnection hubConnection;
@@ -126,6 +128,20 @@ public class SignalRService extends Service {
                             @Override
                             public void run() {
                                 view.speakMessage(msg);
+                            }
+                        });
+                    }
+                }
+                , String.class);
+
+        hubProxy.on(DOOR_OPEN,
+                new SubscriptionHandler1<String>() {
+                    @Override
+                    public void run(final String msg) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.onDoorOpened();
                             }
                         });
                     }

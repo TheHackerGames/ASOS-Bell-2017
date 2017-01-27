@@ -9,4 +9,6 @@ public interface DoorbellView {
     void takePicture();
 
     void speakMessage(String message);
+
+    void onDoorOpened();
 }
