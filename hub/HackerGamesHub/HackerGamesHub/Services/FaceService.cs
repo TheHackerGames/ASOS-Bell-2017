@@ -17,6 +17,8 @@ namespace HackerGamesHub.Services
         private readonly ConcurrentDictionary<Guid, Person> personsCache = new ConcurrentDictionary<Guid, Person>();
         private readonly IHubContext hubContext = GlobalHost.ConnectionManager.GetHubContext<HomeHub>();
 
+        private static readonly List<string> FaceEventsSubscribers = new List<string> { GroupNames.Home, GroupNames.Hue };
+
         public FaceService()
         {
             faceClient = new FaceServiceClient(SubscriptionKey, HttpsWestusApiCognitiveMicrosoftComFaceV1);
@@ -31,6 +33,13 @@ namespace HackerGamesHub.Services
         public async Task Identify(Uri imageLocation)
         {
             var detectedFaces = await faceClient.DetectAsync(imageLocation.ToString());
+
+            if (!detectedFaces.Any())
+            {
+                RaiseUnknownFaces();
+                return;
+            }
+
             var faceIds = detectedFaces.Select(f => f.FaceId).ToArray();
             var identifyResults = await faceClient.IdentifyAsync(FriendsGroupId, faceIds, ConfidenceThreshold);
 
@@ -48,12 +57,12 @@ namespace HackerGamesHub.Services
 
         private void RaiseUnknownFaces()
         {
-            hubContext.Clients.Group(GroupNames.Home).FacesUnknown(FacesUnknownMessage);
+            hubContext.Clients.Groups(FaceEventsSubscribers).FacesUnknown(FacesUnknownMessage);
         }
 
         private void RaiseFaceDetected(List<Candidate> candidates)
         {
-            hubContext.Clients.Group(GroupNames.Home).FacesIdentified(CreateMessageFor(candidates));
+            hubContext.Clients.Groups(FaceEventsSubscribers).FacesIdentified(CreateMessageFor(candidates));
         }
 
         private string CreateMessageFor(IReadOnlyCollection<Candidate> candidates)
