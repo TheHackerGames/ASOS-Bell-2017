@@ -18,6 +18,9 @@ namespace HackerGamesHub.Azure.Api.Infrastructure
             builder.RegisterApiControllers();
             builder.RegisterType<ImageController>();
             builder.RegisterType<ImageService>().As<IImageService>().SingleInstance();
+            builder.RegisterType<FaceService>().As<IFaceService>().SingleInstance()
+                .AutoActivate()
+                .OnActivated(s => s.Instance.LoadPersons());
 
             return builder.Build();
         }

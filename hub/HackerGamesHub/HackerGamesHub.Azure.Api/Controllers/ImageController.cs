@@ -13,6 +13,7 @@ namespace HackerGamesHub.Azure.Api.Controllers
     public class ImageController : ApiController
     {
         private readonly IImageService imageService;
+        private readonly IFaceService faceService;
 
         public ImageController(IImageService imageService)
         {
@@ -32,7 +33,10 @@ namespace HackerGamesHub.Azure.Api.Controllers
 
             var imageId = await imageService.SaveImage(image);
 
-            return Created(BuildUri(imageId), image);
+            var location = BuildUri(imageId);
+
+            Task.Run(() => faceService.Identify(location));
+            return Created(location, image);
         }
 
         private Uri BuildUri(string imageId)
