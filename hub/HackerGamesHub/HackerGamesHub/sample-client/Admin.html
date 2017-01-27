@@ -40,22 +40,28 @@
 			}
 			
             chat.client.bellPressed = function () {
-				appendMessage("bellPressed");
+				appendMessage("bellPressed", arguments);
             };
             chat.client.homeAccepted = function () {
-				appendMessage("homeAccepted");
+				appendMessage("homeAccepted", arguments);
             };
             chat.client.messageSent = function () {
-				appendMessage("messageSent");
+				appendMessage("messageSent", arguments);
             };
             chat.client.messageResponded = function () {
-				appendMessage("messageResponded");
+				appendMessage("messageResponded", arguments);
             };
             chat.client.doorOpened = function () {
-				appendMessage("doorOpened");
+				appendMessage("doorOpened", arguments);
             };
             chat.client.ended = function () {
-				appendMessage("ended");
+				appendMessage("ended", arguments);
+            };
+            chat.client.facesUnknown = function () {
+				appendMessage("facesUnknown", arguments);
+            };
+            chat.client.facesIdentified = function () {
+				appendMessage("facesIdentified", arguments);
             };
 
             $.connection.hub.start().done(function () {
