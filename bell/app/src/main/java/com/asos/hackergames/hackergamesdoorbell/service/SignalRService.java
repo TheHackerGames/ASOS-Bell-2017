@@ -6,7 +6,9 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.widget.Toast;
+import android.support.annotation.NonNull;
+
+import com.asos.hackergames.hackergamesdoorbell.doorbell.view.DoorbellView;
 
 import java.util.concurrent.ExecutionException;
 
@@ -19,11 +21,18 @@ import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import microsoft.aspnet.signalr.client.transport.ClientTransport;
 import microsoft.aspnet.signalr.client.transport.LongPollingTransport;
 
+import static com.asos.hackergames.hackergamesdoorbell.doorbell.model.DoorbellApi.SERVER_URL;
+
 public class SignalRService extends Service {
 
-    private static final String SERVER_URL = "http://hackergameshubazureapi.azurewebsites.net";
     public static final String SERVER_HUB_CHAT = "HomeHub";
     public static final String PRESS_BELL = "PressBell";
+    public static final String ACCEPT_HOME = "HomeAccepted";
+    public static final String SEND_MESSAGE = "SendMessage";
+    public static final String MESSAGE_RESPONDED = "MessageResponded";
+    public static final String DOOR_OPEN = "DoorOpened";
+    public static final String ENDED = "Ended";
+    private DoorbellView view;
 
     private HubConnection hubConnection;
     private HubProxy hubProxy;
@@ -59,6 +68,10 @@ public class SignalRService extends Service {
         return binder;
     }
 
+    public void setView(@NonNull final DoorbellView view) {
+        this.view = view;
+    }
+
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
@@ -70,25 +83,18 @@ public class SignalRService extends Service {
         }
     }
 
-    /**
-     * method for clients (activities)
-     */
-    public void sendMessage(String message, String id) {
+    public void pressBell(String message, String id) {
         hubProxy.invoke(PRESS_BELL, message, id);
+    }
+
+    public void sendText(String message, String id) {
+        hubProxy.invoke(SEND_MESSAGE, message);
     }
 
     private void startSignalR() {
         Platform.loadPlatformComponent(new AndroidPlatformComponent());
 
-//        Credentials credentials = new Credentials() {
-//            @Override
-//            public void prepareRequest(Request request) {
-//                request.addHeader("User-Name", "BNK");
-//            }
-//        };
-
         hubConnection = new HubConnection(SERVER_URL);
-//        hubConnection.setCredentials(credentials);
         hubProxy = hubConnection.createHubProxy(SERVER_HUB_CHAT);
         ClientTransport clientTransport = new LongPollingTransport(hubConnection.getLogger());
         SignalRFuture<Void> signalRFuture = hubConnection.start(clientTransport);
@@ -100,23 +106,62 @@ public class SignalRService extends Service {
             return;
         }
 
-        sendMessage("Initialising", "id");
-
-        String CLIENT_METHOD_BROADAST_MESSAGE = "broadcastMessage";
-        hubProxy.on(CLIENT_METHOD_BROADAST_MESSAGE,
-                new SubscriptionHandler1<CustomMessage>() {
+        hubProxy.on(ACCEPT_HOME,
+                new SubscriptionHandler1<String>() {
                     @Override
-                    public void run(final CustomMessage msg) {
-                        final String finalMsg = msg.UserName + " says " + msg.Message;
-                        // display Toast message
+                    public void run(final String msg) {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(getApplicationContext(), finalMsg, Toast.LENGTH_SHORT).show();
+                                view.requestSpeech();
                             }
                         });
                     }
                 }
-                , CustomMessage.class);
+                , String.class);
+
+        hubProxy.on(MESSAGE_RESPONDED,
+                new SubscriptionHandler1<String>() {
+                    @Override
+                    public void run(final String msg) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.speakMessage(msg);
+                            }
+                        });
+                    }
+                }
+                , String.class);
+
+        hubProxy.on(DOOR_OPEN,
+                new SubscriptionHandler1<String>() {
+                    @Override
+                    public void run(final String msg) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.onDoorOpened();
+                            }
+                        });
+                    }
+                }
+                , String.class);
+
+        hubProxy.on(ENDED,
+                new SubscriptionHandler1<String>() {
+                    @Override
+                    public void run(final String msg) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.onRejected();
+                            }
+                        });
+                    }
+                }
+                , String.class);
+
+        hubProxy.invoke("RegisterBell");
     }
 }

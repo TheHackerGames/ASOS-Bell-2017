@@ -2,12 +2,11 @@ package com.asos.hackergames.hackergamesdoorbell.doorbell.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.asos.hackergames.hackergamesdoorbell.service.CustomServiceConnection;
-import com.asos.hackergames.hackergamesdoorbell.service.SignalRService;
+import com.asos.hackergames.hackergamesdoorbell.doorbell.view.DoorbellView;
 
 public class DoorbellModule {
 
-    public static CustomServiceConnection serviceConnection(@NonNull final SignalRService service) {
-        return new CustomServiceConnection(service);
+    public static DoorbellPresenter presenter(@NonNull final DoorbellView view) {
+        return new DoorbellPresenter(view);
     }
 }
