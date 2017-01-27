@@ -9,12 +9,13 @@ export default class Layout extends React.Component {
   constructor() {
     super();
     this.state = {
-      image: "img/locked.jpg",
+      image: "img/locked.png",
       callState : 0,
+      appClass: 'appFrame locked',
       messages:[
         {
           "name":"message you",
-          "message":"Hello who is it"
+          "message":"Hello who is it ?"
         }
       ]
     };
@@ -25,6 +26,12 @@ export default class Layout extends React.Component {
     this.chat.client.bellPressed = function (message, imageId) {
           this.changeImage(imageId);
           this.setState({callState:1});
+          var audioElement;
+if(!audioElement) {
+  audioElement = document.createElement('audio');
+  audioElement.innerHTML = '<source src="' + 'sound/doorbell-2.mp3'+ '" type="audio/mpeg" />'
+}
+audioElement.play();
 
         }.bind(this);
 
@@ -47,11 +54,13 @@ export default class Layout extends React.Component {
   }
 
   openDoor(){
-    this.changeImage("img/unlock.jpg");
+    this.changeImage("img/unlock.png");
+    this.setState({appClass: 'appFrame unlocked'});
     this.setState({callState:0});
     this.chat.server.openDoor();
     setTimeout(function() {
-      this.changeImage("img/locked.jpg");
+      this.changeImage("img/locked.png");
+      this.setState({appClass: 'appFrame locked'});
     }.bind(this), 5000);
 
   }
@@ -63,8 +72,9 @@ export default class Layout extends React.Component {
   }
   tearDown(){
     this.setState({
-      image: "img/locked.jpg",
+      image: "img/locked.png",
       callState : 0,
+        appClass: 'appFrame locked',
       messages:[
         {
           "name":"message you",
@@ -101,7 +111,7 @@ export default class Layout extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={this.state.appClass}>
         <Video image={this.state.image}/>
         { this.state.callState === 1 ? <Accept acceptCall={this.acceptCall.bind(this)} rejectCall={this.rejectCall.bind(this)} />: null }
         { this.state.callState === 2 ? <Chat updateMessage={this.updateMessage.bind(this)} messages={this.state.messages} />: null }
