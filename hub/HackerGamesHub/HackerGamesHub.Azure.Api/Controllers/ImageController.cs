@@ -15,9 +15,10 @@ namespace HackerGamesHub.Azure.Api.Controllers
         private readonly IImageService imageService;
         private readonly IFaceService faceService;
 
-        public ImageController(IImageService imageService)
+        public ImageController(IImageService imageService, IFaceService faceService)
         {
             this.imageService = imageService;
+            this.faceService = faceService;
         }
 
         [HttpPost]

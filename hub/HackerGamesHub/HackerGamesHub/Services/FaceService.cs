@@ -13,14 +13,20 @@ namespace HackerGamesHub.Services
 {
     public class FaceService : IFaceService
     {
-        private readonly FaceServiceClient faceClient = new FaceServiceClient(SubscriptionKey);
+        private readonly FaceServiceClient faceClient;
         private readonly ConcurrentDictionary<Guid, Person> personsCache = new ConcurrentDictionary<Guid, Person>();
         private readonly IHubContext hubContext = GlobalHost.ConnectionManager.GetHubContext<HomeHub>();
+
+        public FaceService()
+        {
+            faceClient = new FaceServiceClient(SubscriptionKey, HttpsWestusApiCognitiveMicrosoftComFaceV1);
+        }
 
         private const string SubscriptionKey = "8e35e86b64fe441ab9eb63070faba908";
         private const string FriendsGroupId = "friends";
         private const float ConfidenceThreshold = 0.7f;
         private const string FacesUnknownMessage = "Faces Unknown";
+        private const string HttpsWestusApiCognitiveMicrosoftComFaceV1 = "https://westus.api.cognitive.microsoft.com/face/v1.0";
 
         public async Task Identify(Uri imageLocation)
         {
