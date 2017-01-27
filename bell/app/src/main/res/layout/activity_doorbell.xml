@@ -1,35 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_flipper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:inAnimation="@android:anim/slide_in_left"
+    android:outAnimation="@android:anim/slide_out_right">
 
-    <ImageView
-        android:id="@+id/image_preview"
+    <LinearLayout
+        android:id="@+id/main_view"
         android:layout_width="match_parent"
-        android:layout_height="192dp"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/doorbell"
-        android:layout_width="match_parent"
-        android:layout_height="192dp"
-        android:contentDescription="@string/a_doorbell"
-        android:src="@drawable/shape_doorbell" />
+        <ImageView
+            android:id="@+id/image_preview"
+            android:layout_width="match_parent"
+            android:layout_height="192dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
-    <TextView
-        android:id="@+id/user_voice_output"
+        <ImageView
+            android:id="@+id/doorbell"
+            android:layout_width="match_parent"
+            android:layout_height="192dp"
+            android:contentDescription="@string/a_doorbell"
+            android:src="@drawable/shape_doorbell" />
+
+        <TextView
+            android:id="@+id/user_voice_output"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:gravity="center"
+            android:padding="16dp"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="I'm here to make a delivery"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/access_granted"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:gravity="center"
-        android:padding="16dp"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        tools:text="I'm here to make a delivery"
-        tools:visibility="visible" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:background="#007700"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/access_denied"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#df0d0d"
+        android:orientation="vertical" />
+
+</ViewFlipper>

@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.asos.hackergames.hackergamesdoorbell.R;
 import com.asos.hackergames.hackergamesdoorbell.doorbell.model.ApiManager;
@@ -62,6 +63,9 @@ public class DoorbellActivity extends BaseActivity implements DoorbellView, Text
 
     TextToSpeech textToSpeech;
 
+    @BindView(R.id.view_flipper)
+    ViewFlipper viewFlipper;
+
     @BindView(R.id.user_voice_output)
     TextView userText;
 
@@ -89,7 +93,6 @@ public class DoorbellActivity extends BaseActivity implements DoorbellView, Text
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-
             }
 
             @Override
@@ -154,7 +157,12 @@ public class DoorbellActivity extends BaseActivity implements DoorbellView, Text
 
     @Override
     public void onDoorOpened() {
+        viewFlipper.setDisplayedChild(1);
+    }
 
+    @Override
+    public void onRejected() {
+        viewFlipper.setDisplayedChild(2);
     }
 
     @Override
@@ -173,8 +181,6 @@ public class DoorbellActivity extends BaseActivity implements DoorbellView, Text
             // CALL THIS METHOD TO GET THE ACTUAL PATH
             File finalFile = new File(getRealPathFromURI(tempUri));
             sendPhotoR1(finalFile);
-
-            service.pressBell("Ding dong", "image id");
         }
         switch (requestCode) {
             case REQ_CODE_SPEECH_INPUT: {
@@ -207,6 +213,7 @@ public class DoorbellActivity extends BaseActivity implements DoorbellView, Text
             @Override
             public void success(String s, Response response) {
                 Toast.makeText(DoorbellActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                service.pressBell("Ding dong", response.getHeaders().get(5).getValue());
             }
 
             @Override

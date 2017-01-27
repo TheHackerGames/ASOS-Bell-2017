@@ -148,6 +148,20 @@ public class SignalRService extends Service {
                 }
                 , String.class);
 
+        hubProxy.on(ENDED,
+                new SubscriptionHandler1<String>() {
+                    @Override
+                    public void run(final String msg) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.onRejected();
+                            }
+                        });
+                    }
+                }
+                , String.class);
+
         hubProxy.invoke("RegisterBell");
     }
 }

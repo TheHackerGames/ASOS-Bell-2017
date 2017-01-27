@@ -11,4 +11,6 @@ public interface DoorbellView {
     void speakMessage(String message);
 
     void onDoorOpened();
+
+    void onRejected();
 }
